@@ -1,0 +1,54 @@
+.globl binary_convert
+.text
+getStringLength:
+	add $t0, $a0, $0
+	add $t7, $0, $0
+	getStringLengthLoop:
+		lb $t1, ($t0)
+		beq $t1,'\0',exitGetStringLength
+		
+		addi $t0, $t0, 1
+		addi $t7,$t7,1
+		j getStringLengthLoop
+	exitGetStringLength:
+		move $v0, $t7
+		jr $ra
+
+binary_convert:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	jal getStringLength
+	
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	
+	addi $t7, $0, 2
+	add $t9, $0, $v0
+	addi $t8, $t9, -1
+	add $t0, $0, $a0
+	add $t3, $0, $0
+	
+	convertLoop:
+		
+		add $t1, $0, $0
+		addi $t2, $0, 1
+		
+		powerLoop: beq $t1, $t8, convert
+			mul $t2, $t2, $t7
+			addi $t1, $t1, 1
+			j powerLoop
+			
+		convert: 
+			lb $t4,($t0)
+			andi $t4, $t4, 0x0F # Converts the input character to an integer
+		
+			mul $t5, $t2, $t4
+			add $t3, $t3, $t5
+		
+			add $t0, $t0, 1
+			add $t8, $t8, -1
+			bne $t8, -1, convertLoop
+	
+	exit:
+		move $v0, $t3
+		jr $ra

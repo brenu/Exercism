@@ -1,0 +1,16 @@
+.globl hello
+
+.data
+
+msg: .asciiz "Hello, World!"
+
+.text
+
+j main
+hello:
+        la    $v0, msg
+        jr    $ra
+
+main:
+    jal    hello
+    add    $s1, $0, $v0
