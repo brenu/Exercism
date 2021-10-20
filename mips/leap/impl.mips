@@ -1,0 +1,34 @@
+.globl is_leap_year
+.text
+is_leap_year:
+    add $t0,$0,$a0 # Picking input value
+    
+    addi $t1,$0,4   # Defining default values for the input to be divided by
+    addi $t2,$0,100
+    addi $t3,$0,400
+    
+    divide_by_4:
+        div $t0,$t1
+        mfhi $t4
+        beqz $t4, divide_by_100 # $t0 % 4 == 0 => Good
+        j fail
+	    
+	divide_by_100:
+	 	div $t0,$t2
+	 	mfhi $t4
+	 	bnez $t4, success
+	 	j divide_by_400     # $t0 % 100 == 0 => Bad
+	 
+	 divide_by_400:
+	 	div $t0, $t3
+	 	mfhi $t4
+	 	beqz $t4, success   # $t0 % 400 == 0 => Good :D
+	 	j fail
+	
+	success:
+		li $v0, 1
+		jr $ra
+	 	   
+    fail:
+    	li $v0, 0
+    	jr $ra
