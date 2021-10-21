@@ -1,0 +1,37 @@
+.globl difference_of_squares
+.text
+difference_of_squares:
+    add     $t0, $0, $a0
+    addi    $t1, $0, 0
+
+    addi    $t2, $0, 0 # Square of the sum
+    addi    $t3, $0, 0 # Sum of the squares
+    
+    beqz    $t0, calculateDifference # Dealing with input = 0
+
+    # Calculating square of the sum
+    squareOfSumLoop:
+	    addi    $t1, $t1, 1
+        add     $t2, $t2, $t1
+        bne     $t1, $t0, squareOfSumLoop
+
+    exitSquareOfSum:
+        mult    $t2, $t2
+        mflo    $t2
+        addi    $t1, $0, 0
+
+    # Calculating sum of the squares
+    sumOfSquares:
+    	add     $t1, $t1, 1
+        add     $t4, $0, $t1
+        mult	$t4, $t4
+        mflo	$t4
+        
+        add     $t3, $t3, $t4
+        bne     $t1, $t0, sumOfSquares
+
+    calculateDifference:
+        sub $t5, $t2, $t3
+
+        move $v0, $t5
+        jr $ra
