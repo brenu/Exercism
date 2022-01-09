@@ -1,5 +1,8 @@
+const layer_preparation_time: i32 = 2;
+const expected_oven_time: i32 = 40;
+
 pub fn expected_minutes_in_oven() -> i32 {
-    40
+    expected_oven_time
 }
 
 pub fn remaining_minutes_in_oven(actual_minutes_in_oven: i32) -> i32 {
@@ -7,7 +10,7 @@ pub fn remaining_minutes_in_oven(actual_minutes_in_oven: i32) -> i32 {
 }
 
 pub fn preparation_time_in_minutes(number_of_layers: i32) -> i32 {
-    number_of_layers << 1
+    number_of_layers * layer_preparation_time
 }
 
 pub fn elapsed_time_in_minutes(number_of_layers: i32, actual_minutes_in_oven: i32) -> i32 {
