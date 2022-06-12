@@ -1,0 +1,52 @@
+.globl hamming_distance
+.text
+get_string_length:
+    add $t0, $a0, $0
+    add $t7, $0, $0
+
+    get_string_length_loop:
+        lb $t1, ($t0)
+        beq $t1, '\0', exit_get_string_length_loop
+
+        addi $t0, $t0, 1
+        addi $t7, $t7, 1
+        j get_string_length_loop
+    exit_get_string_length_loop:
+        move $v0, $t7
+        jr $ra
+
+hamming_distance:
+    addi $sp, $sp, -4   # Storing $ra on the stack so we don't fall into an infinite loop :)
+    sw $ra, 0($sp)
+    jal get_string_length   # We're not setting any parameters because it would be redundant
+                            # since it has to pick the same $a0 as the one being passed
+                            # to hamming_distance
+
+    lw $ra, 0($sp)
+    addi $sp, $sp, 4    # Getting $ra back
+
+    add $t0, $a0, $0    # Address of current character for the first DNA sequence
+    add $t1, $a1, $0    # Address of current character for the second DNA sequence
+    add $t2, $0, $0     # Basic iteration counter
+
+    add $t8, $0, $0     # Differences counter
+    add $t9, $0, $v0    # Max sequence length, every further character will be ignored
+
+    hamming_distance_loop:
+        lb $t3, ($t0)
+        lb $t4, ($t1)
+        beq $t3, $t4, hamming_distance_loop_end
+        
+        addi $t8, $t8, 1
+
+        hamming_distance_loop_end:
+            beq $t2, $t9, hamming_distance_end
+
+            addi $t0, $t0, 1
+            addi $t1, $t1, 1
+            addi $t2, $t2, 1
+            j hamming_distance_loop
+
+    hamming_distance_end:
+        move $v0, $t8
+        jr $ra
